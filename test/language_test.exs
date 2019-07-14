@@ -112,5 +112,7 @@ defmodule LanguageTest do
     assert {:ok, _} = parse(code.("0x0"))
     assert {:error, _} = parse(code.("nil"))
     assert {:error, _} = parse(code.(":atom"))
+    assert {:error, _} = parse(code.("2"))
+    assert {:error, _} = parse(code.("-1"))
   end
 end

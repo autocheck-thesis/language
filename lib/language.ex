@@ -156,10 +156,19 @@ defmodule AutocheckLanguage do
 
   # Grade field
   defp parse_statement(
+         {:@, _meta, [{:grade, [line: line], [grade_percentage]}]},
+         %AutocheckLanguage{} = p
+       )
+       when (is_float(grade_percentage) or is_integer(grade_percentage)) and
+              (grade_percentage < 0 or grade_percentage > 1),
+       do: add_error(p, line, "grade must be a value between 0 and 1", "", "")
+
+  defp parse_statement(
          {:@, _meta, [{:grade, _meta2, [grade_percentage]}]},
          %AutocheckLanguage{} = p
        )
-       when is_float(grade_percentage) or is_integer(grade_percentage),
+       when is_float(grade_percentage) or
+              is_integer(grade_percentage),
        do: %{p | grade: grade_percentage}
 
   # Unsupported field
