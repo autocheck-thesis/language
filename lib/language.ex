@@ -249,7 +249,7 @@ defmodule AutocheckLanguage do
   end
 
   defp parse_step_command({key, _meta, params}, _p) when key in @built_in_functions,
-    do: {:ok, [key, params]}
+    do: {:ok, [to_string(key), params]}
 
   defp parse_step_command({function, [line: line], _params}, %AutocheckLanguage{environment: nil}) do
     {:error, create_error(line, "undefined function: ", function, "")}
