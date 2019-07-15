@@ -75,8 +75,18 @@ defmodule AutocheckLanguage do
       {:ok, configuration} ->
         configuration
 
-      {:error, error} ->
-        raise error
+      {:error, errors} ->
+        errors
+        |> Enum.map(fn %Error{
+                         line: line,
+                         description: description,
+                         token: token,
+                         description_suffix: description_suffix
+                       } ->
+          "Line #{line}: #{description}#{token}. #{description_suffix}"
+        end)
+        |> Enum.join("\n")
+        |> raise()
     end
   end
 

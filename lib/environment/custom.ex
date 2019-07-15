@@ -1,5 +1,5 @@
 defmodule AutocheckLanguage.Environment.Custom do
-  @behaviour AutocheckLanguage.Environment
+  use AutocheckLanguage.Environment
 
   def image({:image, image}) do
     {:ok, image}
