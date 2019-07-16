@@ -129,18 +129,25 @@ defmodule LanguageTest do
 
     step "random" do
       run "cat %f"
+      run "view %f"
+      run "diff %f %fresh"
     end
     """
 
     assert {:ok,
             %AutocheckLanguage{
-              steps: steps,
+              steps: [%{commands: commands}],
               grade: grade,
               image: image
             }} = parse(code) |> IO.inspect()
 
     assert grade == 0.5
     assert image == "haskell"
-    assert [%{commands: [["run", ["cat Lab1.hs"]]]}] = steps
+
+    assert [
+             ["run", ["cat Lab1.hs"]],
+             ["run", ["view Lab1.hs"]],
+             ["run", ["diff Lab1.hs %fresh"]]
+           ] = commands
   end
 end
