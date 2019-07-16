@@ -115,4 +115,32 @@ defmodule LanguageTest do
     assert {:error, _} = parse(code.("2"))
     assert {:error, _} = parse(code.("-1"))
   end
+
+  test "configuration with variables" do
+    code = """
+    g = 0.5
+    i = "haskell"
+    f = "Lab1.hs"
+
+    @env "custom",
+      image: i
+    @grade g
+
+
+    step "random" do
+      run "cat %f"
+    end
+    """
+
+    assert {:ok,
+            %AutocheckLanguage{
+              steps: steps,
+              grade: grade,
+              image: image
+            }} = parse(code) |> IO.inspect()
+
+    assert grade == 0.5
+    assert image == "haskell"
+    assert [%{commands: [["run", ["cat Lab1.hs"]]]}] = steps
+  end
 end
