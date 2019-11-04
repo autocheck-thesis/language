@@ -8,6 +8,7 @@ defmodule AutocheckLanguage do
             required_files: [],
             allowed_file_extensions: [],
             grade: nil,
+            network_access: false,
             variables: %{},
             steps: [],
             errors: []
@@ -29,7 +30,8 @@ defmodule AutocheckLanguage do
     :env,
     :required_files,
     :allowed_file_extensions,
-    :grade
+    :grade,
+    :network_access
   ]
 
   @environments %{
@@ -187,6 +189,26 @@ defmodule AutocheckLanguage do
        when is_float(grade_percentage) or
               is_integer(grade_percentage),
        do: %{state | grade: grade_percentage}
+
+  # Network access field
+  defp parse_statement(
+         {:@, meta, [{:network_access, meta2, [{name, _meta2, _params}]}]},
+         state
+       ),
+       do: parse_statement({:@, meta, [{:network_access, meta2, [variable(state, name)]}]}, state)
+
+  defp parse_statement(
+         {:@, _meta, [{:network_access, [line: line], [boolean]}]},
+         state
+       )
+       when not is_boolean(boolean),
+       do: add_error(state, line, "network_access must be a boolean true or false", "", "")
+
+  defp parse_statement(
+         {:@, _meta, [{:network_access, _meta2, [boolean]}]},
+         state
+       ),
+       do: %{state | network_access: boolean}
 
   # Unsupported field
   defp parse_statement({:@, _meta, [{field, [line: line], _params}]}, state)

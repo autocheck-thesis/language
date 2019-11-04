@@ -3,5 +3,6 @@ defmodule AutocheckLanguage.Configuration do
             required_files: [],
             allowed_file_extensions: [],
             grade: nil,
+            network_access: false,
             steps: []
 end
